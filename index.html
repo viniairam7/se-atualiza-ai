@@ -163,8 +163,8 @@
 <div id="chat" class="chat">
   <div class="msg bot">
     👋 Olá!  
-    Envie uma manchete, um tema atual ou uma dúvida bíblica.
-    Aqui buscamos **verdade factual** e **discernimento cristão**.
+    Envie uma manchete, um tema atual ou uma dúvida bíblica.  
+    Aqui buscamos <strong>verdade factual</strong> e <strong>discernimento cristão</strong>.
   </div>
 </div>
 
@@ -179,6 +179,8 @@
 </footer>
 
 <script>
+  const API_BASE = "https://verdadeegraca.onrender.com";
+
   async function enviar() {
     const input = document.getElementById("input");
     const chat = document.getElementById("chat");
@@ -189,7 +191,7 @@
     chat.innerHTML += `<div class="msg user">${texto}</div>`;
     input.value = "";
 
-    const res = await fetch("https://se-atualiza-ai.onrender.com/chat", {
+    const res = await fetch(`${API_BASE}/chat`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ mensagem: texto })
@@ -210,10 +212,12 @@
   }
 
   async function carregarTrending() {
-    const res = await fetch("https://se-atualiza-ai.onrender.com/trending");
+    const res = await fetch(`${API_BASE}/trending`);
     const data = await res.json();
 
     const div = document.getElementById("trending");
+    div.innerHTML = "";
+
     data.noticias.forEach(n => {
       div.innerHTML += `
         <div class="news">
