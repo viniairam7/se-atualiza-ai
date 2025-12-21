@@ -13,9 +13,9 @@ app.use(express.json());
    CHAT COM IA
 ========================= */
 app.post("/api/chat", async (req, res) => {
-  const { messages } = req.body;
-
   try {
+    const { messages } = req.body;
+
     const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -30,10 +30,14 @@ app.post("/api/chat", async (req, res) => {
     });
 
     const data = await response.json();
-    res.json(data.choices[0].message);
+
+    res.json({
+      content: data.choices?.[0]?.message?.content || "Sem resposta da IA."
+    });
 
   } catch (err) {
-    res.status(500).json({ error: "Erro ao comunicar com a IA" });
+    console.error(err);
+    res.status(500).json({ content: "Erro ao comunicar com a IA." });
   }
 });
 
@@ -43,12 +47,16 @@ app.post("/api/chat", async (req, res) => {
 app.get("/api/noticias", async (req, res) => {
   const prompt = `
 Gere 12 notícias imparciais no estilo jornalístico profissional.
-Para cada notícia, forneça:
-- Título
-- Resumo objetivo
-- Análise de relevância e veracidade
-- Reflexão bíblica conectada ao tema (sem proselitismo político)
-Formato JSON.
+Retorne APENAS um JSON válido no formato:
+
+[
+  {
+    "titulo": "",
+    "resumo": "",
+    "analise": "",
+    "reflexao_biblica": ""
+  }
+]
 `;
 
   try {
@@ -66,15 +74,31 @@ Formato JSON.
     });
 
     const data = await response.json();
-    res.json(JSON.parse(data.choices[0].message.content));
+    let content = data.choices?.[0]?.message?.content || "[]";
+
+    // 🧠 LIMPEZA DE JSON (anti-quebra)
+    content = content
+      .replace(/```json/g, "")
+      .replace(/```/g, "")
+      .trim();
+
+    let noticias;
+    try {
+      noticias = JSON.parse(content);
+    } catch {
+      noticias = [];
+    }
+
+    res.json(noticias);
 
   } catch (err) {
-    res.status(500).json({ error: "Erro ao gerar notícias" });
+    console.error(err);
+    res.status(500).json([]);
   }
 });
 
 /* ========================= */
 app.listen(PORT, () => {
-  console.log("🔥 Verdade & Graça API rodando");
+  console.log("🔥 Verdade & Graça API rodando na porta", PORT);
 });
 
