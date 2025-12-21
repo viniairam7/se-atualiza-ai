@@ -2,25 +2,22 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Verdade & Graça</title>
-  <meta name="theme-color" content="#2f2f2d" />
 
-  <!-- PWA -->
-  <link rel="manifest" href="manifest.json" />
-  <link rel="icon" href="icon-192.PNG" />
+  <!-- Ícone do site -->
+  <link rel="icon" type="image/png" href="icon-192.PNG"/>
 
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <!-- Fonte elegante -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
 
   <style>
     :root {
-      --bg: #2f2f2d;
+      --bg: #2b2b2a;
       --card: #3a3a38;
-      --gold: #d6b87c;
-      --text: #f5f5f5;
-      --muted: #bdbdbd;
+      --gold: #d6b26e;
+      --text: #f2f2f2;
+      --muted: #b9b9b9;
     }
 
     * {
@@ -29,213 +26,140 @@
 
     body {
       margin: 0;
+      font-family: 'Inter', sans-serif;
       background: var(--bg);
-      font-family: Inter, sans-serif;
       color: var(--text);
+      display: flex;
+      justify-content: center;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 420px;
+      padding: 24px 16px 40px;
     }
 
     header {
-      padding: 1.2rem;
       text-align: center;
-      border-bottom: 1px solid #444;
+      margin-bottom: 24px;
     }
 
     header h1 {
-      font-family: "Playfair Display", serif;
-      font-size: 1.6rem;
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
       color: var(--gold);
       margin: 0;
     }
 
     header p {
-      margin-top: 0.3rem;
-      font-size: 0.85rem;
+      margin-top: 6px;
       color: var(--muted);
-    }
-
-    .chat {
-      padding: 1rem;
-      max-width: 720px;
-      margin: auto;
-    }
-
-    .msg {
-      max-width: 85%;
-      padding: 0.9rem 1rem;
-      border-radius: 14px;
-      margin-bottom: 0.8rem;
       font-size: 0.95rem;
-      line-height: 1.5;
-      word-wrap: break-word;
     }
 
-    .user {
-      background: var(--gold);
-      color: #1c1c1c;
-      margin-left: auto;
-      border-bottom-right-radius: 4px;
-    }
-
-    .bot {
+    .message.bot {
       background: var(--card);
-      color: var(--text);
-      border-bottom-left-radius: 4px;
+      padding: 14px;
+      border-radius: 14px;
+      margin-bottom: 16px;
+      font-size: 0.95rem;
+      line-height: 1.4;
     }
 
-    .copy-btn {
-      margin-top: 0.6rem;
-      font-size: 0.75rem;
-      color: var(--gold);
-      cursor: pointer;
-    }
-
-    .input-box {
-      position: sticky;
-      bottom: 0;
-      background: var(--bg);
-      padding: 1rem;
-      border-top: 1px solid #444;
+    .chat-box {
+      margin-top: 20px;
     }
 
     textarea {
       width: 100%;
-      resize: none;
-      height: 70px;
-      border-radius: 12px;
-      padding: 0.75rem;
-      font-size: 0.9rem;
-      background: #1f1f1f;
-      color: var(--text);
+      background: #1f1f1e;
       border: 1px solid #555;
+      border-radius: 14px;
+      padding: 14px;
+      font-size: 0.95rem;
+      color: var(--text);
+      resize: none;
+      outline: none;
     }
 
     textarea::placeholder {
-      color: #aaa;
+      color: #9c9c9c;
     }
 
     button {
       width: 100%;
-      margin-top: 0.6rem;
-      padding: 0.75rem;
+      margin-top: 12px;
       background: var(--gold);
-      color: #1c1c1c;
       border: none;
-      border-radius: 10px;
+      padding: 14px;
+      border-radius: 14px;
+      font-size: 1rem;
       font-weight: 600;
-      font-size: 0.95rem;
       cursor: pointer;
+      color: #1f1f1f;
+    }
+
+    button:hover {
+      opacity: 0.9;
     }
 
     footer {
-      padding: 1.2rem;
-      background: #1f1f1f;
-      margin-top: 2rem;
+      margin-top: 36px;
     }
 
     footer h3 {
       font-size: 1rem;
-      margin-bottom: 0.8rem;
       color: var(--gold);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
-    .news {
-      font-size: 0.85rem;
-      background: #2a2a28;
-      padding: 0.7rem;
-      border-radius: 10px;
-      margin-bottom: 0.6rem;
-      line-height: 1.4;
+    .topics {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
 
-    .news strong {
-      color: var(--gold);
+    .topic {
+      background: #1f1f1e;
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      color: var(--muted);
     }
   </style>
 </head>
 
 <body>
+  <div class="app">
 
-<header>
-  <h1>Verdade & Graça</h1>
-  <p>Analisando o mundo à luz da Palavra</p>
-</header>
+    <header>
+      <h1>Verdade & Graça</h1>
+      <p>Analisando o mundo à luz da Palavra</p>
+    </header>
 
-<div id="chat" class="chat">
-  <div class="msg bot">
-    👋 Olá!  
-    Envie uma manchete, um tema atual ou uma dúvida bíblica.  
-    Aqui buscamos <strong>verdade factual</strong> e <strong>discernimento cristão</strong>.
-  </div>
-</div>
+    <div class="message bot">
+      👋 Olá! Envie uma manchete, um tema atual ou uma dúvida bíblica.
+      Aqui buscamos <strong>verdade factual</strong> e <strong>discernimento cristão</strong>.
+    </div>
 
-<div class="input-box">
-  <textarea id="input" placeholder="Não achou alguma notícia específica? Coloque a manchete aqui ou tire dúvidas bíblicas sobre o Antigo e Novo Testamento."></textarea>
-  <button onclick="enviar()">Enviar</button>
-</div>
+    <div class="chat-box">
+      <textarea rows="3" placeholder="Não achou alguma notícia específica? Coloque a manchete aqui ou tire dúvidas bíblicas sobre o Antigo e Novo Testamento."></textarea>
+      <button>Enviar</button>
+    </div>
 
-<footer>
-  <h3>📰 Assuntos mais falados de hoje</h3>
-  <div id="trending"></div>
-</footer>
-
-<script>
-  const API_BASE = "https://verdadeegraca.onrender.com";
-
-  async function enviar() {
-    const input = document.getElementById("input");
-    const chat = document.getElementById("chat");
-    const texto = input.value.trim();
-
-    if (!texto) return;
-
-    chat.innerHTML += `<div class="msg user">${texto}</div>`;
-    input.value = "";
-
-    const res = await fetch(`${API_BASE}/chat`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ mensagem: texto })
-    });
-
-    const data = await res.json();
-
-    const botMsg = document.createElement("div");
-    botMsg.className = "msg bot";
-    botMsg.innerHTML = `
-      ${data.resposta}
-      <div class="copy-btn" onclick="navigator.clipboard.writeText(\`${data.resposta}\`)">
-        📋 Copiar resposta
+    <footer>
+      <h3>📰 Assuntos mais falados de hoje</h3>
+      <div class="topics">
+        <div class="topic">• Conflitos internacionais e implicações políticas</div>
+        <div class="topic">• Economia global e inflação</div>
+        <div class="topic">• Avanços em inteligência artificial</div>
+        <div class="topic">• Ética cristã em tempos digitais</div>
       </div>
-    `;
-    chat.appendChild(botMsg);
-    chat.scrollTop = chat.scrollHeight;
-  }
+    </footer>
 
-  async function carregarTrending() {
-    const res = await fetch(`${API_BASE}/trending`);
-    const data = await res.json();
-
-    const div = document.getElementById("trending");
-    div.innerHTML = "";
-
-    data.noticias.forEach(n => {
-      div.innerHTML += `
-        <div class="news">
-          <strong>${n.titulo}</strong><br/>
-          ${n.categoria} • ${n.status} • Relevância ${n.relevancia}<br/>
-          📖 ${n.biblico}
-        </div>
-      `;
-    });
-  }
-
-  carregarTrending();
-
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("sw.js");
-  }
-</script>
-
+  </div>
 </body>
 </html>
-
