@@ -4,7 +4,9 @@ import fetch from "node-fetch";
 
 const app = express();
 const PORT = process.env.PORT || 10000;
+
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
+const NEWS_API_KEY = process.env.NEWS_API_KEY;
 
 app.use(cors({ origin: "*" }));
 app.use(express.json());
@@ -16,7 +18,9 @@ app.post("/api/chat", async (req, res) => {
   const { prompt } = req.body;
 
   if (!prompt) {
-    return res.json({ reply: "Por favor, digite uma pergunta ou manchete." });
+    return res.json({
+      reply: "Por favor, digite uma pergunta ou manchete."
+    });
   }
 
   try {
@@ -34,7 +38,7 @@ app.post("/api/chat", async (req, res) => {
             {
               role: "system",
               content:
-                "Você é o Verdade & Graça, um analista imparcial que responde com clareza, verdade factual e reflexão bíblica equilibrada."
+                "Você é o Verdade & Graça, um analista imparcial. Responda com clareza, base factual e reflexão bíblica equilibrada, sem viés político."
             },
             { role: "user", content: prompt }
           ],
@@ -44,11 +48,13 @@ app.post("/api/chat", async (req, res) => {
     );
 
     const data = await response.json();
+
     const text =
       data?.choices?.[0]?.message?.content ||
       "Não foi possível gerar uma resposta no momento.";
 
     res.json({ reply: text });
+
   } catch (error) {
     res.json({
       reply:
@@ -58,23 +64,53 @@ app.post("/api/chat", async (req, res) => {
 });
 
 /* =========================
-   NOTÍCIAS DO DIA (TEXTO SIMPLES)
+   NOTÍCIAS DO DIA (REAIS)
 ========================= */
 app.get("/api/noticias", async (req, res) => {
-  const prompt = `
-Liste 12 notícias atuais e imparciais (política, economia e ciência).
-Para cada notícia, escreva em TEXTO CORRIDO:
+  try {
+    /* 1️⃣ Buscar notícias reais */
+    const newsResponse = await fetch(
+      "https://newsapi.org/v2/top-headlines?language=pt&pageSize=12",
+      {
+        headers: {
+          "X-Api-Key": NEWS_API_KEY
+        }
+      }
+    );
 
-• Título
-• Resumo objetivo
-• Relevância e veracidade
-• Reflexão bíblica equilibrada
+    const newsData = await newsResponse.json();
 
-Não use JSON.
+    if (!newsData.articles || newsData.articles.length === 0) {
+      return res.json({
+        reply: "Não foi possível carregar notícias reais hoje."
+      });
+    }
+
+    /* 2️⃣ Montar texto factual */
+    const noticiasTexto = newsData.articles
+      .map(
+        (n, i) => `
+${i + 1}. ${n.title}
+Fonte: ${n.source.name}
+Resumo: ${n.description || "Resumo indisponível."}
+`
+      )
+      .join("\n");
+
+    /* 3️⃣ IA analisa (sem inventar fatos) */
+    const prompt = `
+A seguir estão notícias REAIS do dia, com fonte jornalística.
+
+Para CADA notícia:
+• Avalie a relevância
+• Comente brevemente a veracidade com base na fonte
+• Traga uma reflexão bíblica equilibrada (sem proselitismo político)
+
+NOTÍCIAS:
+${noticiasTexto}
 `;
 
-  try {
-    const response = await fetch(
+    const aiResponse = await fetch(
       "https://openrouter.ai/api/v1/chat/completions",
       {
         method: "POST",
@@ -90,20 +126,22 @@ Não use JSON.
       }
     );
 
-    const data = await response.json();
+    const aiData = await aiResponse.json();
+
     const text =
-      data?.choices?.[0]?.message?.content ||
-      "Não foi possível carregar as notícias hoje.";
+      aiData?.choices?.[0]?.message?.content ||
+      "Não foi possível analisar as notícias hoje.";
 
     res.json({ reply: text });
+
   } catch (error) {
     res.json({
-      reply: "Erro ao buscar notícias."
+      reply: "Erro ao buscar ou analisar notícias."
     });
   }
 });
 
+/* ========================= */
 app.listen(PORT, () => {
   console.log("🔥 Verdade & Graça API rodando");
 });
-
