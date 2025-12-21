@@ -2,164 +2,189 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Verdade & Graça</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Ícone do site -->
-  <link rel="icon" type="image/png" href="icon-192.PNG"/>
-
-  <!-- Fonte elegante -->
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
-
+  <!-- Estilo -->
   <style>
-    :root {
-      --bg: #2b2b2a;
-      --card: #3a3a38;
-      --gold: #d6b26e;
-      --text: #f2f2f2;
-      --muted: #b9b9b9;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
     body {
       margin: 0;
-      font-family: 'Inter', sans-serif;
-      background: var(--bg);
-      color: var(--text);
+      font-family: "Georgia", serif;
+      background: #2b2b2b;
+      color: #eaeaea;
       display: flex;
       justify-content: center;
     }
 
-    .app {
+    .container {
+      max-width: 720px;
       width: 100%;
-      max-width: 420px;
-      padding: 24px 16px 40px;
+      padding: 40px 20px;
     }
 
-    header {
-      text-align: center;
-      margin-bottom: 24px;
+    h1 {
+      color: #d4b26a;
+      margin-bottom: 4px;
     }
 
-    header h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: 2rem;
-      color: var(--gold);
-      margin: 0;
+    h2 {
+      margin-top: 40px;
+      color: #d4b26a;
     }
 
-    header p {
-      margin-top: 6px;
-      color: var(--muted);
-      font-size: 0.95rem;
+    .subtitle {
+      opacity: 0.8;
+      margin-bottom: 30px;
     }
 
-    .message.bot {
-      background: var(--card);
-      padding: 14px;
-      border-radius: 14px;
+    .box {
+      background: #3a3a3a;
+      padding: 16px;
+      border-radius: 12px;
       margin-bottom: 16px;
-      font-size: 0.95rem;
-      line-height: 1.4;
-    }
-
-    .chat-box {
-      margin-top: 20px;
     }
 
     textarea {
       width: 100%;
-      background: #1f1f1e;
-      border: 1px solid #555;
-      border-radius: 14px;
-      padding: 14px;
-      font-size: 0.95rem;
-      color: var(--text);
-      resize: none;
-      outline: none;
-    }
-
-    textarea::placeholder {
-      color: #9c9c9c;
+      min-height: 80px;
+      padding: 12px;
+      border-radius: 10px;
+      border: none;
+      resize: vertical;
+      font-size: 16px;
+      background: #1f1f1f;
+      color: #fff;
     }
 
     button {
       width: 100%;
       margin-top: 12px;
-      background: var(--gold);
-      border: none;
       padding: 14px;
-      border-radius: 14px;
-      font-size: 1rem;
-      font-weight: 600;
+      border-radius: 12px;
+      border: none;
+      background: #d4b26a;
+      font-size: 16px;
+      font-weight: bold;
       cursor: pointer;
-      color: #1f1f1f;
     }
 
-    button:hover {
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .news {
+      background: #1f1f1f;
+      padding: 16px;
+      border-radius: 12px;
+      margin-bottom: 14px;
+    }
+
+    .news h3 {
+      margin-top: 0;
+      color: #d4b26a;
+    }
+
+    .news p {
+      margin: 6px 0;
+      line-height: 1.5;
+    }
+
+    .bible {
+      font-style: italic;
       opacity: 0.9;
+      margin-top: 10px;
     }
 
     footer {
-      margin-top: 36px;
-    }
-
-    footer h3 {
-      font-size: 1rem;
-      color: var(--gold);
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .topics {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .topic {
-      background: #1f1f1e;
-      padding: 12px;
-      border-radius: 12px;
-      font-size: 0.9rem;
-      color: var(--muted);
+      text-align: center;
+      margin-top: 40px;
+      opacity: 0.6;
+      font-size: 14px;
     }
   </style>
 </head>
 
 <body>
-  <div class="app">
+  <div class="container">
+    <h1>Verdade & Graça</h1>
+    <div class="subtitle">Analisando o mundo à luz da Palavra</div>
 
-    <header>
-      <h1>Verdade & Graça</h1>
-      <p>Analisando o mundo à luz da Palavra</p>
-    </header>
-
-    <div class="message bot">
-      👋 Olá! Envie uma manchete, um tema atual ou uma dúvida bíblica.
+    <div class="box">
+      👋 <strong>Olá!</strong> Envie uma manchete, um tema atual ou uma dúvida bíblica.
       Aqui buscamos <strong>verdade factual</strong> e <strong>discernimento cristão</strong>.
     </div>
 
-    <div class="chat-box">
-      <textarea rows="3" placeholder="Não achou alguma notícia específica? Coloque a manchete aqui ou tire dúvidas bíblicas sobre o Antigo e Novo Testamento."></textarea>
-      <button>Enviar</button>
-    </div>
+    <textarea id="input" placeholder="Digite aqui sua manchete, tema ou pergunta bíblica..."></textarea>
+    <button id="sendBtn">Enviar</button>
+
+    <h2>📰 Assuntos mais falados de hoje</h2>
+    <div id="newsContainer"></div>
 
     <footer>
-      <h3>📰 Assuntos mais falados de hoje</h3>
-      <div class="topics">
-        <div class="topic">• Conflitos internacionais e implicações políticas</div>
-        <div class="topic">• Economia global e inflação</div>
-        <div class="topic">• Avanços em inteligência artificial</div>
-        <div class="topic">• Ética cristã em tempos digitais</div>
-      </div>
+      © Verdade & Graça — Tudo deve ser examinado à luz da Palavra (1Ts 5:21)
     </footer>
-
   </div>
+
+  <!-- Script -->
+  <script>
+    const API_URL = "https://verdadeegraca.onrender.com";
+
+    const input = document.getElementById("input");
+    const button = document.getElementById("sendBtn");
+    const newsContainer = document.getElementById("newsContainer");
+
+    async function carregarNoticias() {
+      newsContainer.innerHTML = "⏳ Carregando notícias...";
+      try {
+        const res = await fetch(`${API_URL}/api/noticias`);
+        const data = await res.json();
+
+        newsContainer.innerHTML = "";
+
+        data.forEach(noticia => {
+          const div = document.createElement("div");
+          div.className = "news";
+          div.innerHTML = `
+            <h3>${noticia.titulo}</h3>
+            <p><strong>Análise:</strong> ${noticia.analise}</p>
+            <p class="bible">📖 ${noticia.reflexaoBiblica}</p>
+          `;
+          newsContainer.appendChild(div);
+        });
+
+      } catch (err) {
+        newsContainer.innerHTML = "❌ Erro ao carregar notícias.";
+      }
+    }
+
+    button.addEventListener("click", async () => {
+      const texto = input.value.trim();
+      if (!texto) return;
+
+      button.disabled = true;
+      button.textContent = "Enviando...";
+
+      try {
+        await fetch(`${API_URL}/api/pergunta`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ texto })
+        });
+
+        input.value = "";
+        carregarNoticias();
+
+      } catch (err) {
+        alert("Erro ao enviar. Tente novamente.");
+      } finally {
+        button.disabled = false;
+        button.textContent = "Enviar";
+      }
+    });
+
+    carregarNoticias();
+  </script>
 </body>
 </html>
+
