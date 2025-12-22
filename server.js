@@ -9,77 +9,101 @@ const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 app.use(cors());
 app.use(express.json());
 
-app.post("/api/ask", async (req, res) => {
-  const { type, message } = req.body;
+/* =========================
+   FUNÇÃO BASE IA
+========================= */
+async function callAI(prompt) {
+  const response = await fetch(
+    "https://openrouter.ai/api/v1/chat/completions",
+    {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://verdadeegraca.vercel.app",
+        "X-Title": "Verdade & Graça"
+      },
+      body: JSON.stringify({
+        model: "openai/gpt-3.5-turbo",
+        temperature: 0.6,
+        messages: [
+          {
+            role: "system",
+            content:
+              "Você é o Verdade & Graça. Responda com clareza, equilíbrio bíblico, verdade factual e linguagem acessível."
+          },
+          { role: "user", content: prompt }
+        ]
+      })
+    }
+  );
 
-  let prompt = "";
+  if (!response.ok) {
+    const error = await response.text();
+    console.error("OpenRouter erro:", error);
+    throw new Error("Erro IA");
+  }
 
-  switch (type) {
-    case "noticias":
-      prompt = `
-Traga as principais notícias do dia de forma imparcial.
-Explique com clareza, contexto e finalize com discernimento bíblico equilibrado.
-Texto fluido, sem listas.
-`;
-      break;
+  const data = await response.json();
 
-    case "devocional":
-      prompt = `
-Crie uma devocional cristã para hoje.
-Estrutura:
-Introdução
-Desenvolvimento
-Conclusão
-Com aplicação prática e base bíblica.
-`;
-      break;
+  return (
+    data?.choices?.[0]?.message?.content ||
+    "Não foi possível gerar a resposta agora."
+  );
+}
 
-    case "jesus":
-      prompt = `
-Explique como Jesus agiria hoje em relação a:
-dinheiro, trabalho, estudos e relacionamentos.
-Baseie-se nos evangelhos.
-`;
-      break;
+/* =========================
+   CHAT GERAL
+========================= */
+app.post("/api/chat", async (req, res) => {
+  const { prompt } = req.body;
 
-    default:
-      prompt = message;
+  if (!prompt) {
+    return res.json({ reply: "Digite uma pergunta." });
   }
 
   try {
-    const response = await fetch(
-      "https://openrouter.ai/api/v1/chat/completions",
-      {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          model: "openai/gpt-4o",
-          messages: [
-            {
-              role: "system",
-              content:
-                "Você é o Verdade & Graça. Responda com clareza, verdade, equilíbrio e fidelidade bíblica."
-            },
-            { role: "user", content: prompt }
-          ],
-          temperature: 0.6
-        })
-      }
-    );
+    let finalPrompt = prompt;
 
-    const data = await response.json();
+    if (prompt === "Notícias do dia") {
+      finalPrompt = `
+Liste 5 notícias atuais e reais (Brasil e mundo).
+Para cada uma:
+- Resumo curto
+- Importância
+- Reflexão bíblica equilibrada
+`;
+    }
 
-    const reply =
-      data?.choices?.[0]?.message?.content ||
-      "Não foi possível gerar a resposta agora.";
+    if (prompt === "Devocional de hoje") {
+      finalPrompt = `
+Crie um devocional cristão para o dia de hoje.
+Estrutura:
+- Introdução
+- Desenvolvimento
+- Aplicação prática
+- Versículo bíblico
+- Conclusão
+`;
+    }
 
+    if (prompt === "O que Jesus faria?") {
+      finalPrompt = `
+Explique como Jesus lidaria hoje com:
+- Dinheiro
+- Trabalho
+- Relacionamentos
+- Estudos
+Use os evangelhos como base.
+`;
+    }
+
+    const reply = await callAI(finalPrompt);
     res.json({ reply });
+
   } catch (err) {
-    res.status(500).json({
-      reply: "Erro ao se comunicar com a IA."
+    res.json({
+      reply: "Não foi possível gerar a resposta agora."
     });
   }
 });
