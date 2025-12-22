@@ -1,73 +1,73 @@
 import express from "express";
 import fetch from "node-fetch";
-import dotenv from "dotenv";
-import cors from "cors";
-
-dotenv.config();
+import path from "path";
+import { fileURLToPath } from "url";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middlewares
-app.use(cors());
+// Necessário para __dirname em ESModules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Middleware
 app.use(express.json());
-app.use(express.static("public")); // onde fica o index.html
+app.use(express.static(__dirname));
 
-// ===============================
-// ROTA PRINCIPAL – REFLEXÃO DO DIA
-// ===============================
-app.post("/api/refletir", async (req, res) => {
+// Rota principal (index.html)
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "index.html"));
+});
+
+// 🔹 ROTA DE REFLEXÃO DO DIA
+app.post("/api/refletir-dia", async (req, res) => {
   try {
-    const { rotina } = req.body;
+    const { plano } = req.body;
 
-    if (!rotina) {
-      return res.status(400).json({
-        error: "Rotina não enviada"
-      });
+    if (!plano) {
+      return res.status(400).json({ error: "Plano do dia não informado." });
     }
 
-    const systemPrompt = `
-Você é um orientador espiritual cristão sábio, sereno e acolhedor.
-Escreva de forma humana, fluida e pastoral.
-Nunca use listas, tópicos ou markdown.
+    const prompt = `
+Você é um assistente cristão pastoral e sensível.
+
+A pessoa descreveu sua programação do dia assim:
+"${plano}"
+
+Tarefas:
+1. Sugira horários práticos para:
+   - oração
+   - leitura bíblica
+   - um momento de silêncio com Deus
+2. Em seguida, escreva uma reflexão pastoral conectando essa rotina com Deus
+3. Inclua um texto bíblico apropriado
+4. Termine com encorajamento, paz e esperança
+
+Use uma linguagem:
+- acolhedora
+- simples
+- profunda
+- humana
 `;
 
-    const userPrompt = `
-A pessoa descreveu sua rotina do dia assim:
-
-"${rotina}"
-
-Com base nisso:
-- Sugira bons momentos para oração, leitura bíblica e quietude.
-- Gere uma reflexão conectando o dia com um texto bíblico.
-- Finalize com encorajamento e esperança.
-
-Escreva como alguém que caminha junto.
-`;
-
-    const response = await fetch(
-      "https://openrouter.ai/api/v1/chat/completions",
-      {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          model: "openai/gpt-4o",
-          messages: [
-            { role: "system", content: systemPrompt },
-            { role: "user", content: userPrompt }
-          ],
-          temperature: 0.6
-        })
-      }
-    );
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        model: "gpt-4o-mini",
+        messages: [{ role: "user", content: prompt }],
+        temperature: 0.7
+      })
+    });
 
     const data = await response.json();
 
-    if (!data.choices || !data.choices[0]) {
-      throw new Error("Resposta inválida da IA");
+    if (!data.choices) {
+      console.error(data);
+      return res.status(500).json({ error: "Erro ao gerar reflexão." });
     }
 
     res.json({
@@ -75,16 +75,12 @@ Escreva como alguém que caminha junto.
     });
 
   } catch (error) {
-    console.error("Erro:", error);
-    res.status(500).json({
-      error: "Erro ao refletir o dia"
-    });
+    console.error("Erro no servidor:", error);
+    res.status(500).json({ error: "Erro interno do servidor." });
   }
 });
 
-// ===============================
-// START DO SERVIDOR
-// ===============================
+// Inicialização
 app.listen(PORT, () => {
-  console.log(`✅ Verdade & Graça rodando na porta ${PORT}`);
+  console.log(`✅ Servidor rodando na porta ${PORT}`);
 });
