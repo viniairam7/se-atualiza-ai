@@ -149,7 +149,7 @@ app.post("/api/chat", async (req, res) => {
 
     if (prompt === "Notícias do dia") {
       finalPrompt = `
-Liste 5 notícias atuais e reais (Brasil e mundo).
+Pesquise nos portais da CNN e BBC as principais notícias do dia.
 Para cada uma:
 - Resumo curto
 - Importância
