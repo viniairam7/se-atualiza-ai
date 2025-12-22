@@ -1,86 +1,79 @@
 import express from "express";
-import fetch from "node-fetch";
-import path from "path";
-import { fileURLToPath } from "url";
+import cors from "cors";
+import dotenv from "dotenv";
+import OpenAI from "openai";
+
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Necessário para __dirname em ESModules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// Middleware
+// 🔓 Middlewares
+app.use(cors());
 app.use(express.json());
-app.use(express.static(__dirname));
 
-// Rota principal (index.html)
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));
+// 🤖 OpenAI
+const client = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY
 });
 
-// 🔹 ROTA DE REFLEXÃO DO DIA
+// ✅ ROTA DE TESTE (IMPORTANTE)
+app.get("/", (req, res) => {
+  res.send("Servidor Verdade & Graça ativo 🙏");
+});
+
+// ✅ ROTA PRINCIPAL
 app.post("/api/refletir-dia", async (req, res) => {
   try {
-    const { plano } = req.body;
+    const { planos } = req.body;
 
-    if (!plano) {
-      return res.status(400).json({ error: "Plano do dia não informado." });
+    if (!planos || planos.trim().length < 2) {
+      return res.status(400).json({
+        error: "Planos do dia não informados."
+      });
     }
 
     const prompt = `
-Você é um assistente cristão pastoral e sensível.
+Você é um orientador cristão sábio, calmo e encorajador.
 
-A pessoa descreveu sua programação do dia assim:
-"${plano}"
+A pessoa descreveu seu dia assim:
+"${planos}"
 
 Tarefas:
-1. Sugira horários práticos para:
+1. Sugira horários realistas para:
    - oração
    - leitura bíblica
    - um momento de silêncio com Deus
-2. Em seguida, escreva uma reflexão pastoral conectando essa rotina com Deus
-3. Inclua um texto bíblico apropriado
-4. Termine com encorajamento, paz e esperança
+2. Explique o porquê dessas sugestões
+3. Traga uma reflexão bíblica conectada à rotina descrita
+4. Cite pelo menos 1 versículo bíblico
+5. Finalize com uma palavra de encorajamento pastoral
 
-Use uma linguagem:
-- acolhedora
+Tom:
+- acolhedor
 - simples
-- profunda
-- humana
+- profundo
+- pastoral
 `;
 
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
-        messages: [{ role: "user", content: prompt }],
-        temperature: 0.7
-      })
+    const response = await client.responses.create({
+      model: "gpt-4.1-mini",
+      input: prompt
     });
 
-    const data = await response.json();
+    const texto = response.output_text;
 
-    if (!data.choices) {
-      console.error(data);
-      return res.status(500).json({ error: "Erro ao gerar reflexão." });
-    }
-
-    res.json({
-      resposta: data.choices[0].message.content
-    });
+    res.json({ resultado: texto });
 
   } catch (error) {
-    console.error("Erro no servidor:", error);
-    res.status(500).json({ error: "Erro interno do servidor." });
+    console.error("ERRO NA ROTA /api/refletir-dia:", error);
+    res.status(500).json({
+      error: "Não consegui refletir agora. Tente novamente em instantes."
+    });
   }
 });
 
-// Inicialização
+// 🚀 START
 app.listen(PORT, () => {
-  console.log(`✅ Servidor rodando na porta ${PORT}`);
+  console.log(`Servidor rodando na porta ${PORT}`);
 });
