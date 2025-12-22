@@ -1,234 +1,112 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Verdade & Graça</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Verdade & Graça</title>
 
-  <style>
-    :root {
-      --bg: #0f0f0f;
-      --card: #1a1a1a;
-      --gold: #d6b86a;
-      --green: #1f3d2b;
-      --green-border: #2e6b4e;
-      --text: #eaeaea;
-      --muted: #9a9a9a;
-    }
+<style>
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #0b0b0b;
+  color: #ffffff;
+}
 
-    * {
-      box-sizing: border-box;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto;
-    }
+.container {
+  padding: 20px;
+  max-width: 480px;
+  margin: auto;
+}
 
-    body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--text);
-    }
+h1 {
+  text-align: center;
+  color: #d6b25e;
+  margin-bottom: 8px;
+}
 
-    header {
-      text-align: center;
-      padding: 20px 16px 10px;
-    }
+.subtitle {
+  text-align: center;
+  opacity: 0.7;
+  font-size: 14px;
+  margin-bottom: 24px;
+}
 
-    header h1 {
-      margin: 0;
-      color: var(--gold);
-      font-size: 28px;
-    }
+.card {
+  background: #161616;
+  border-radius: 18px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
 
-    header p {
-      margin: 6px 0 0;
-      font-size: 14px;
-      color: var(--muted);
-    }
+textarea {
+  width: 100%;
+  background: #0f0f0f;
+  border: none;
+  border-radius: 14px;
+  padding: 14px;
+  color: white;
+  font-size: 15px;
+  resize: none;
+}
 
-    .actions {
-      display: grid;
-      gap: 10px;
-      padding: 14px;
-    }
+button {
+  width: 100%;
+  margin-top: 14px;
+  padding: 14px;
+  border-radius: 14px;
+  border: none;
+  background: #d6b25e;
+  font-size: 16px;
+  font-weight: 500;
+}
 
-    .action-btn {
-      background: var(--card);
-      color: var(--gold);
-      border-radius: 14px;
-      padding: 14px;
-      text-align: center;
-      font-weight: 600;
-      cursor: pointer;
-      border: 1px solid #2a2a2a;
-    }
-
-    .chat {
-      padding: 10px 14px 120px;
-    }
-
-    .bubble {
-      margin-bottom: 12px;
-      max-width: 92%;
-      padding: 12px 14px;
-      border-radius: 14px;
-      font-size: 15px;
-      line-height: 1.4;
-    }
-
-    .user {
-      background: var(--green);
-      border-left: 4px solid var(--green-border);
-      margin-left: auto;
-    }
-
-    .bot {
-      background: var(--card);
-      border-left: 4px solid var(--gold);
-    }
-
-    .copy {
-      font-size: 13px;
-      margin-top: 6px;
-      color: var(--gold);
-      cursor: pointer;
-    }
-
-    .input-bar {
-      position: fixed;
-      bottom: env(safe-area-inset-bottom);
-      left: 0;
-      right: 0;
-      background: #121212;
-      padding: 10px;
-      display: flex;
-      gap: 8px;
-      border-top: 1px solid #222;
-    }
-
-    .input-bar input {
-      flex: 1;
-      border-radius: 12px;
-      border: none;
-      padding: 12px;
-      font-size: 15px;
-    }
-
-    .send-btn {
-      width: 48px;
-      border-radius: 12px;
-      background: var(--gold);
-      border: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-    }
-
-    .send-btn svg {
-      width: 20px;
-      height: 20px;
-      fill: #000;
-    }
-
-    .book-btn {
-      position: fixed;
-      top: 14px;
-      right: 14px;
-      width: 42px;
-      height: 42px;
-      background: var(--card);
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      border: 1px solid #2a2a2a;
-    }
-
-    .book-btn svg {
-      width: 22px;
-      height: 22px;
-      fill: var(--gold);
-    }
-  </style>
+.response {
+  white-space: pre-wrap;
+  line-height: 1.6;
+}
+</style>
 </head>
 
 <body>
 
-  <!-- Botão Estudos -->
-  <div class="book-btn" onclick="window.open('https://drive.google.com/drive/folders/1bRn3zs-SpuGXOzWb47BmKJGrxrOV3M7O')">
-    <svg viewBox="0 0 24 24">
-      <path d="M4 4h13a3 3 0 013 3v13H7a3 3 0 01-3-3V4zm3 14h13V7a1 1 0 00-1-1H7v12z"/>
-    </svg>
+<div class="container">
+  <h1>Verdade & Graça</h1>
+  <div class="subtitle">
+    Um cuidado diário entre sua rotina e Deus
   </div>
 
-  <header>
-    <h1>Verdade & Graça</h1>
-    <p>Tudo deve ser examinado à luz da Palavra</p>
-  </header>
+  <div class="card">
+    <p>
+      Quais são seus planos e horários para hoje?
+      Conte como será o seu dia.
+    </p>
 
-  <div class="actions">
-    <div class="action-btn" onclick="sendPreset('Notícias do dia')">📰 Notícias do dia</div>
-    <div class="action-btn" onclick="sendPreset('Devocional de hoje')">📖 Devocional de hoje</div>
-    <div class="action-btn" onclick="sendPreset('O que Jesus faria?')">✝️ O que Jesus faria?</div>
+    <textarea id="rotina" rows="6"
+      placeholder="Ex: acordo às 6h, trabalho das 8h às 17h, estudo à noite..."></textarea>
+
+    <button onclick="enviar()">Refletir meu dia</button>
   </div>
 
-  <div class="chat" id="chat"></div>
-
-  <div class="input-bar">
-    <input id="input" placeholder="Digite sua dúvida bíblica..." />
-    <button class="send-btn" onclick="sendMessage()">
-      <svg viewBox="0 0 24 24">
-        <path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/>
-      </svg>
-    </button>
-  </div>
+  <div class="card response" id="resposta"></div>
+</div>
 
 <script>
-const API_URL = "https://verdadeegraca.onrender.com/api/chat";
-const chat = document.getElementById("chat");
-const input = document.getElementById("input");
+async function enviar() {
+  const texto = document.getElementById("rotina").value.trim();
+  if (!texto) return;
 
-function addBubble(text, type) {
-  const div = document.createElement("div");
-  div.className = `bubble ${type}`;
-  div.innerHTML = text;
-  chat.appendChild(div);
-  chat.scrollTop = chat.scrollHeight;
-}
+  const respostaDiv = document.getElementById("resposta");
+  respostaDiv.textContent = "Refletindo seu dia com calma...";
 
-async function sendToAPI(text) {
-  addBubble(text, "user");
+  const res = await fetch("/api/rotina", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ rotina: texto })
+  });
 
-  try {
-    const res = await fetch(API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt: text })
-    });
-
-    const data = await res.json();
-
-    if (!data.reply) throw new Error();
-
-    addBubble(
-      `${data.reply}<div class="copy" onclick="navigator.clipboard.writeText('${data.reply.replace(/'/g, "")}')">📋 Copiar</div>`,
-      "bot"
-    );
-
-  } catch {
-    addBubble("Não foi possível gerar a resposta agora.", "bot");
-  }
-}
-
-function sendMessage() {
-  const text = input.value.trim();
-  if (!text) return;
-  input.value = "";
-  sendToAPI(text);
-}
-
-function sendPreset(text) {
-  sendToAPI(text);
+  const data = await res.json();
+  respostaDiv.textContent = data.resposta;
 }
 </script>
 
