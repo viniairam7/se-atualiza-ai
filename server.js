@@ -1,51 +1,56 @@
 import express from "express";
-import cors from "cors";
 import fetch from "node-fetch";
+import dotenv from "dotenv";
+import cors from "cors";
+
+dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 10000;
-const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
+const PORT = process.env.PORT || 3000;
 
+// Middlewares
 app.use(cors());
 app.use(express.json());
+app.use(express.static("public")); // onde fica o index.html
 
-app.post("/api/rotina", async (req, res) => {
-  const { rotina } = req.body;
+// ===============================
+// ROTA PRINCIPAL – REFLEXÃO DO DIA
+// ===============================
+app.post("/api/refletir", async (req, res) => {
+  try {
+    const { rotina } = req.body;
 
-  const systemPrompt = `
-Você é um orientador espiritual cristão sábio, sensível e prático.
-Seu papel é ajudar pessoas comuns a organizarem sua vida diária
-de forma saudável, equilibrada e conectada com Deus.
+    if (!rotina) {
+      return res.status(400).json({
+        error: "Rotina não enviada"
+      });
+    }
 
-Nunca use listas com marcadores, asteriscos ou markdown.
-Escreva sempre em texto fluido, humano e acolhedor.
+    const systemPrompt = `
+Você é um orientador espiritual cristão sábio, sereno e acolhedor.
+Escreva de forma humana, fluida e pastoral.
+Nunca use listas, tópicos ou markdown.
 `;
 
-  const userPrompt = `
+    const userPrompt = `
 A pessoa descreveu sua rotina do dia assim:
 
 "${rotina}"
 
-Tarefa:
-1. Analise os horários e compromissos.
-2. Sugira, em texto corrido, os melhores momentos do dia para:
-oração, leitura bíblica e um tempo de quietude com Deus,
-de forma realista e respeitosa.
-3. Em seguida, escreva uma reflexão personalizada sobre esse dia,
-conectando a rotina apresentada com um texto bíblico apropriado
-(cite apenas o livro e capítulo).
-4. Finalize com palavras de encorajamento pastoral, simples e sinceras.
+Com base nisso:
+- Sugira bons momentos para oração, leitura bíblica e quietude.
+- Gere uma reflexão conectando o dia com um texto bíblico.
+- Finalize com encorajamento e esperança.
 
-Tudo deve parecer uma conversa pessoal e cuidadosa.
+Escreva como alguém que caminha junto.
 `;
 
-  try {
     const response = await fetch(
       "https://openrouter.ai/api/v1/chat/completions",
       {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${OPENROUTER_API_KEY}`,
+          "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
@@ -60,13 +65,26 @@ Tudo deve parecer uma conversa pessoal e cuidadosa.
     );
 
     const data = await response.json();
-    res.json({ resposta: data.choices[0].message.content });
 
-  } catch (err) {
-    res.status(500).json({ error: "Erro ao gerar orientação espiritual." });
+    if (!data.choices || !data.choices[0]) {
+      throw new Error("Resposta inválida da IA");
+    }
+
+    res.json({
+      resposta: data.choices[0].message.content
+    });
+
+  } catch (error) {
+    console.error("Erro:", error);
+    res.status(500).json({
+      error: "Erro ao refletir o dia"
+    });
   }
 });
 
+// ===============================
+// START DO SERVIDOR
+// ===============================
 app.listen(PORT, () => {
-  console.log(`🙏 Servidor espiritual rodando na porta ${PORT}`);
+  console.log(`✅ Verdade & Graça rodando na porta ${PORT}`);
 });
