@@ -6,136 +6,215 @@
 <title>Verdade & Graça</title>
 
 <style>
-  body {
-    margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-    background: #0b0b0b;
-    color: #ffffff;
-  }
+:root {
+  --gold: #d6b25e;
+  --emerald: #0f3d2e;
+  --emerald-dark: #0b2b21;
+}
 
-  .container {
-    padding: 20px;
-    max-width: 480px;
-    margin: auto;
-  }
+* {
+  box-sizing: border-box;
+}
 
-  h1 {
-    text-align: center;
-    color: #d6b25e;
-    margin-bottom: 8px;
-  }
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  background: radial-gradient(
+    circle at top,
+    #123f30,
+    #050505 70%
+  );
+  color: #ffffff;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+}
 
-  .subtitle {
-    text-align: center;
-    opacity: 0.7;
-    font-size: 14px;
-    margin-bottom: 24px;
-  }
+.app {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
 
-  .card {
-    background: #161616;
-    border-radius: 18px;
-    padding: 16px;
-    margin-bottom: 20px;
-  }
+/* HEADER */
+.header {
+  padding: 20px 16px 12px;
+  text-align: center;
+}
 
-  textarea {
-    width: 100%;
-    background: #0f0f0f;
-    border: none;
-    border-radius: 14px;
-    padding: 14px;
-    color: white;
-    font-size: 15px;
-    resize: none;
-    outline: none;
-  }
+.header h1 {
+  margin: 0;
+  font-size: 26px;
+  background: linear-gradient(90deg, var(--gold), #f0d98c);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
 
-  button {
-    width: 100%;
-    margin-top: 14px;
-    padding: 14px;
-    border-radius: 14px;
-    border: none;
-    background: #d6b25e;
-    font-size: 16px;
-    font-weight: 500;
-    cursor: pointer;
-  }
+.subtitle {
+  font-size: 13px;
+  opacity: 0.75;
+  margin-top: 6px;
+}
 
-  button:disabled {
-    opacity: 0.6;
-  }
+/* CHAT */
+.chat {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
 
-  .response {
-    white-space: pre-wrap;
-    line-height: 1.6;
-    font-size: 15px;
-  }
+.bubble {
+  max-width: 85%;
+  padding: 14px 16px;
+  border-radius: 18px;
+  line-height: 1.5;
+  font-size: 15px;
+}
+
+.bot {
+  align-self: flex-start;
+  background: linear-gradient(
+    135deg,
+    var(--emerald),
+    var(--emerald-dark)
+  );
+  border-bottom-left-radius: 6px;
+}
+
+.user {
+  align-self: flex-end;
+  background: linear-gradient(
+    135deg,
+    var(--gold),
+    #f3df9c
+  );
+  color: #1b1b1b;
+  border-bottom-right-radius: 6px;
+}
+
+/* INPUT */
+.input-area {
+  padding: 12px;
+  display: flex;
+  gap: 10px;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+}
+
+textarea {
+  flex: 1;
+  resize: none;
+  border: none;
+  border-radius: 16px;
+  padding: 12px 14px;
+  font-size: 15px;
+  background: #0e0e0e;
+  color: white;
+  height: 48px;
+}
+
+textarea:focus {
+  outline: none;
+}
+
+.send-btn {
+  width: 48px;
+  height: 48px;
+  border: none;
+  border-radius: 50%;
+  background: linear-gradient(
+    135deg,
+    var(--gold),
+    #f0d98c
+  );
+  color: #1b1b1b;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
 </style>
 </head>
 
 <body>
 
-<div class="container">
-  <h1>Verdade & Graça</h1>
-  <div class="subtitle">
-    Um cuidado diário entre sua rotina e Deus
+<div class="app">
+
+  <div class="header">
+    <h1>Verdade & Graça</h1>
+    <div class="subtitle">
+      Um cuidado diário entre sua rotina e Deus
+    </div>
   </div>
 
-  <div class="card">
-    <p>
-      Quais são seus planos e horários para hoje?
+  <div class="chat" id="chat">
+    <div class="bubble bot">
+      Quais são seus planos e horários para hoje?<br />
       Conte como será o seu dia.
-    </p>
+    </div>
+  </div>
 
+  <div class="input-area">
     <textarea
       id="rotina"
-      rows="6"
-      placeholder="Ex: trabalho às 10h, estudo à noite, descanso em família..."
+      placeholder="Descreva seu dia..."
     ></textarea>
 
-    <button id="btn" onclick="enviar()">Refletir meu dia</button>
+    <button class="send-btn" onclick="enviar()">
+      ➤
+    </button>
   </div>
 
-  <div class="card response" id="resposta"></div>
 </div>
 
 <script>
 async function enviar() {
-  const texto = document.getElementById("rotina").value.trim();
-  const respostaDiv = document.getElementById("resposta");
-  const botao = document.getElementById("btn");
+  const input = document.getElementById("rotina");
+  const chat = document.getElementById("chat");
+  const texto = input.value.trim();
 
   if (!texto) return;
 
-  respostaDiv.textContent = "Refletindo seu dia com calma...";
-  botao.disabled = true;
+  // Mensagem do usuário
+  const userBubble = document.createElement("div");
+  userBubble.className = "bubble user";
+  userBubble.textContent = texto;
+  chat.appendChild(userBubble);
+
+  input.value = "";
+  chat.scrollTop = chat.scrollHeight;
+
+  // Mensagem temporária do bot
+  const botBubble = document.createElement("div");
+  botBubble.className = "bubble bot";
+  botBubble.textContent = "Refletindo seu dia com calma...";
+  chat.appendChild(botBubble);
+  chat.scrollTop = chat.scrollHeight;
 
   try {
-    const res = await fetch("https://verdadeegraca.onrender.com/api/planos", {
+    const res = await fetch("/api/rotina", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        planos: texto
-      })
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ rotina: texto })
     });
 
-    if (!res.ok) {
-      throw new Error("Erro no servidor");
-    }
+    if (!res.ok) throw new Error();
 
     const data = await res.json();
-    respostaDiv.textContent = data.resposta;
+    botBubble.textContent = data.resposta;
 
-  } catch (err) {
-    respostaDiv.textContent =
+  } catch {
+    botBubble.textContent =
       "Não consegui refletir agora. Tente novamente em instantes.";
-  } finally {
-    botao.disabled = false;
   }
+
+  chat.scrollTop = chat.scrollHeight;
 }
 </script>
 
