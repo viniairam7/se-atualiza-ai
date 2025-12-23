@@ -1,16 +1,13 @@
 {
   "name": "verdade-e-graca",
   "version": "1.0.0",
-  "description": "Verdade & Graça – Analisando o mundo à luz da Palavra",
-  "main": "server.js",
   "type": "module",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
-    "cors": "^2.8.5",
     "express": "^4.19.2",
-    "node-fetch": "^3.3.2"
+    "cors": "^2.8.5",
+    "openai": "^4.0.0"
   }
 }
-
