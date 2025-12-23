@@ -2,14 +2,16 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>Verdade & Graça</title>
 
 <style>
 :root {
-  --gold: #d6b25e;
+  --gold: #e3c77a;
   --emerald: #0f3d2e;
-  --emerald-dark: #0b2b21;
+  --emerald-dark: #09261d;
+  --user-bubble: #e3c77a;
+  --bot-bubble: #124a37;
 }
 
 * {
@@ -18,56 +20,50 @@
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-  background: radial-gradient(
-    circle at top,
-    #123f30,
-    #050505 70%
-  );
-  color: #ffffff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: linear-gradient(180deg, var(--emerald), #000);
+  color: #fff;
   height: 100vh;
-  display: flex;
-  justify-content: center;
+  overflow: hidden;
 }
 
+/* APP CONTAINER */
 .app {
-  width: 100%;
-  max-width: 420px;
   display: flex;
   flex-direction: column;
   height: 100vh;
+  padding-top: env(safe-area-inset-top);
 }
 
 /* HEADER */
 .header {
-  padding: 20px 16px 12px;
+  padding: 18px 16px 12px;
   text-align: center;
 }
 
 .header h1 {
   margin: 0;
   font-size: 26px;
-  background: linear-gradient(90deg, var(--gold), #f0d98c);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--gold);
 }
 
-.subtitle {
-  font-size: 13px;
-  opacity: 0.75;
-  margin-top: 6px;
+.header p {
+  margin: 6px 0 0;
+  font-size: 14px;
+  opacity: 0.8;
 }
 
-/* CHAT */
+/* CHAT AREA */
 .chat {
   flex: 1;
-  padding: 16px;
   overflow-y: auto;
+  padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
+/* BUBBLES */
 .bubble {
   max-width: 85%;
   padding: 14px 16px;
@@ -77,66 +73,57 @@ body {
 }
 
 .bot {
+  background: var(--bot-bubble);
   align-self: flex-start;
-  background: linear-gradient(
-    135deg,
-    var(--emerald),
-    var(--emerald-dark)
-  );
   border-bottom-left-radius: 6px;
 }
 
 .user {
+  background: var(--user-bubble);
+  color: #1a1a1a;
   align-self: flex-end;
-  background: linear-gradient(
-    135deg,
-    var(--gold),
-    #f3df9c
-  );
-  color: #1b1b1b;
   border-bottom-right-radius: 6px;
 }
 
-/* INPUT */
+/* INPUT AREA */
 .input-area {
-  padding: 12px;
+  padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+  background: linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,0.8));
+}
+
+.input-box {
   display: flex;
+  align-items: center;
   gap: 10px;
-  background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(8px);
+  background: #0c1f18;
+  border-radius: 24px;
+  padding: 6px 10px;
 }
 
 textarea {
   flex: 1;
-  resize: none;
+  background: transparent;
   border: none;
-  border-radius: 16px;
-  padding: 12px 14px;
+  color: #fff;
   font-size: 15px;
-  background: #0e0e0e;
-  color: white;
-  height: 48px;
-}
-
-textarea:focus {
+  resize: none;
   outline: none;
+  max-height: 80px;
 }
 
-.send-btn {
-  width: 48px;
-  height: 48px;
-  border: none;
+textarea::placeholder {
+  color: rgba(255,255,255,0.5);
+}
+
+/* SEND BUTTON */
+.send {
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  background: linear-gradient(
-    135deg,
-    var(--gold),
-    #f0d98c
-  );
-  color: #1b1b1b;
+  border: none;
+  background: var(--gold);
+  color: #1a1a1a;
   font-size: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   cursor: pointer;
 }
 </style>
@@ -146,39 +133,41 @@ textarea:focus {
 
 <div class="app">
 
+  <!-- HEADER -->
   <div class="header">
     <h1>Verdade & Graça</h1>
-    <div class="subtitle">
-      Um cuidado diário entre sua rotina e Deus
-    </div>
+    <p>Um cuidado diário entre sua rotina e Deus</p>
   </div>
 
+  <!-- CHAT -->
   <div class="chat" id="chat">
     <div class="bubble bot">
-      Quais são seus planos e horários para hoje?<br />
+      Quais são seus planos e horários para hoje?<br>
       Conte como será o seu dia.
     </div>
   </div>
 
+  <!-- INPUT -->
   <div class="input-area">
-    <textarea
-      id="rotina"
-      placeholder="Descreva seu dia..."
-    ></textarea>
-
-    <button class="send-btn" onclick="enviar()">
-      ➤
-    </button>
+    <div class="input-box">
+      <textarea id="rotina" rows="1" placeholder="Descreva seu dia..."></textarea>
+      <button class="send" onclick="enviar()">➤</button>
+    </div>
   </div>
 
 </div>
 
 <script>
-async function enviar() {
-  const input = document.getElementById("rotina");
-  const chat = document.getElementById("chat");
-  const texto = input.value.trim();
+const chat = document.getElementById("chat");
+const textarea = document.getElementById("rotina");
 
+textarea.addEventListener("input", () => {
+  textarea.style.height = "auto";
+  textarea.style.height = Math.min(textarea.scrollHeight, 80) + "px";
+});
+
+async function enviar() {
+  const texto = textarea.value.trim();
   if (!texto) return;
 
   // Mensagem do usuário
@@ -187,10 +176,11 @@ async function enviar() {
   userBubble.textContent = texto;
   chat.appendChild(userBubble);
 
-  input.value = "";
+  textarea.value = "";
+  textarea.style.height = "auto";
   chat.scrollTop = chat.scrollHeight;
 
-  // Mensagem temporária do bot
+  // Placeholder da IA
   const botBubble = document.createElement("div");
   botBubble.className = "bubble bot";
   botBubble.textContent = "Refletindo seu dia com calma...";
@@ -198,17 +188,14 @@ async function enviar() {
   chat.scrollTop = chat.scrollHeight;
 
   try {
-    const res = await fetch("/api/rotina", {
+    const res = await fetch("https://verdadeegraca.onrender.com", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ rotina: texto })
     });
 
-    if (!res.ok) throw new Error();
-
     const data = await res.json();
     botBubble.textContent = data.resposta;
-
   } catch {
     botBubble.textContent =
       "Não consegui refletir agora. Tente novamente em instantes.";
